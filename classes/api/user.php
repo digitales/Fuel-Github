@@ -9,7 +9,7 @@ namespace Github\Api;
  * @author Joseph Bielawski <stloyd@gmail.com>
  * @author Thibault Duplessis <thibault.duplessis at gmail dot com>
  */
-class User extends Abstract_Api
+class User extends AbstractApi
 {
     /**
      * Search users by username:
