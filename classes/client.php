@@ -2,17 +2,19 @@
 
 namespace Github;
 
+use Github\Api;
 use Github\Api\Api_Interface;
-use Github\Http_Client\HttpClientInterface;
-use Github\Http_Client\HttpClient;
+
+use Fuel\Core\Request;
+use Fuel\Core\Request_Curl;
+
 
 /**
- * Simple yet very cool PHP Github client
+ * Simple FuelPHP Github client
  *
- * @author Thibault Duplessis <thibault.duplessis at gmail dot com>
- * @author Joseph Bielawski <stloyd@gmail.com>
- *
- * Website: http://github.com/KnpLabs/php-github-api
+ * @author Ross Tweedie <r.tweedie@gmail.com>
+ * 
+ * Website: http://github.com/digitales/Fuel-Github
  */
 class Client
 {
@@ -33,13 +35,21 @@ class Client
      * with username and token via HTTP Authentication.
      */
     const AUTH_HTTP_TOKEN = 'http_token';
+    
+    
+    protected static $_user, $_api_token, $_url, $_driver;
+    protected static $_consumer_key, $_consumer_secret, $_callback;
+    protected static $_redirect_url, $_api_url;
+    
+    protected $options, $params;
 
+    
     /**
      * The httpClient instance used to communicate with GitHub
      *
      * @var HttpClientInterface
      */
-    private $httpClient = null;
+    private $client = null;
 
     /**
      * The list of loaded API instances
@@ -60,10 +70,96 @@ class Client
      *
      * @param HttpClientInterface $httpClient custom http client
      */
-    public function __construct(HttpClientInterface $httpClient = null)
+    public function __construct( )
     {
-        $this->httpClient = $httpClient ?: new HttpClient();
+        if ( !isset( static::$_url ) || static::$_url =='' ){
+            $this->setup();
+        }
     }
+    
+    /**
+     * Set up the client with the config settings
+     *
+     * @param null
+     * @return Github\Client fluent interface
+     */
+    public function setup()
+    {
+        $config = \Config::load('github', true);
+
+        static::$_url               = $config[ $config['active'] ]['api_url'];
+        static::$_consumer_key      = $config[ $config['active'] ]['consumer_key'];
+        static::$_consumer_secret   = $config[ $config['active'] ]['consumer_secret'];
+        static::$_callback          = $config[ $config['active'] ]['callback'];
+        static::$_redirect_url      = $config[ $config['active'] ]['redirect_url'];
+        static::$_api_url           = $config[ $config['active'] ]['api_url'];
+        
+        // We need to use the CURL driver for this to work.
+        $this->set_option( 'driver', 'curl' );
+        
+        return $this;
+    }
+    
+    
+    /**
+	 * Sets options on the driver
+	 *
+	 * @param   array  $options
+	 * @return  Github\Client fluent interface
+	 */
+	public function set_options(array $options)
+	{
+		foreach ($options as $key => $val)
+		{
+			$this->options[$key] = $val;
+		}
+
+		return $this;
+	}
+
+	
+    /**
+	 * Sets a single option/value
+	 *
+	 * @param   int|string $option
+	 * @param   mixed $value
+	 * @return  Github\Client fluent interface
+	 */
+	public function set_option($option, $value)
+	{
+		return $this->set_options(array($option => $value));
+	}
+    
+    
+    /**
+	 * Sets params for the driver
+	 *
+	 * @param   array  $options
+	 * @return  Github\Client fluent interface
+	 */
+	public function set_params(array $options)
+	{
+		foreach ($options as $key => $val)
+		{
+			$this->params[$key] = $val;
+		}
+
+		return $this;
+	}
+
+    
+	/**
+	 * Sets a single param/value
+	 *
+	 * @param   int|string  $option
+	 * @param   mixed       $value
+	 * @return  Github\Client fluent interface
+	 */
+	public function set_param($option, $value)
+	{
+		return $this->set_params(array($option => $value));
+	}
+    
 
     /**
      * Authenticate a user for all next requests
@@ -71,23 +167,45 @@ class Client
      * @param string      $login  GitHub username
      * @param string      $secret GitHub private token or Github password if $method == AUTH_HTTP_PASSWORD
      * @param null|string $method One of the AUTH_* class constants
+     * @return Github\Client fluent interface
      */
     public function authenticate($login, $secret = null, $method = null)
     {
-        $this->getHttpClient()->setOption('auth_method', $method);
-
         if ($method === self::AUTH_HTTP_PASSWORD) {
-            $this
-                ->getHttpClient()
-                ->setOption('login', $login)
-                ->setOption('password', $secret)
-            ;
-        } else {
-            $this->getHttpClient()->setOption('token', $secret);
+            $this->set_option('login', $login)->set_option('password', $secret);
+        } else {    
+            $this->set_param('access_token', $secret);
         }
-
-        $this->getHttpClient()->authenticate();
+        return $this;
     }
+    
+    
+    /**
+     * Prepare the request to be performed
+     * Ex: $api->get('repos/show/my-username/my-repo')
+     *
+     * @param string $path the GitHub path
+     * @param array $parameters GET parameters
+     * @param array $requestOptions reconfigure the request
+     * @param string $method
+     * @return array  data to be returned
+     */
+    protected function prepare_request( $path, array $parameters = array(), $requestOptions = array(), $method = 'get' )
+    {
+        $url = self::$_url.'/'.$path;
+        
+        $options = $this->options;
+        $options['params']  = array_merge( $this->params, $parameters );   
+        
+        $response  = Request::forge( $url, $options, $method )->execute()->response();
+        
+        if ( isset( $response->body ) ){
+            return \Format::forge( $response->body, 'json' )->to_array();
+        }else{
+            return false;
+        }
+    }
+    
 
     /**
      * Call any path, GET method
@@ -100,7 +218,7 @@ class Client
      */
     public function get($path, array $parameters = array(), $requestOptions = array())
     {
-        return $this->getHttpClient()->get($path, $parameters, $requestOptions);
+        return $this->prepare_request( $path, $parameters, $requestOptions, 'get' );
     }
 
     /**
@@ -114,8 +232,24 @@ class Client
      */
     public function post($path, array $parameters = array(), $requestOptions = array())
     {
-        return $this->getHttpClient()->post($path, $parameters, $requestOptions);
+        return $this->prepare_request( $path, $parameters, $requestOptions, 'post' );
     }
+    
+    
+    /**
+     * Call any path, PATCH method
+     * Ex: $api->patc('repos/show/my-username', array('email' => 'my-new-email@provider.org'))
+     *
+     * @param   string  $path             the GitHub path
+     * @param   array   $parameters       POST parameters
+     * @param   array   $requestOptions   reconfigure the request
+     * @return  array                     data returned
+     */
+    public function patch($path, array $parameters = array(), $requestOptions = array())
+    {
+        return $this->prepare_request( $path, $parameters, $requestOptions, 'post' );
+    }
+    
 
     /**
      * Call any path, PUT method
@@ -126,20 +260,7 @@ class Client
      */
     public function put($path, $requestOptions = array())
     {
-        return $this->getHttpClient()->put($path, $requestOptions);
-    }
-
-    /**
-     * Call any path, PATCH method
-     *
-     * @param   string  $path            the GitHub path
-     * @param   array   $parameters       Patch parameters
-     * @param   array   $requestOptions   reconfigure the request
-     * @return  array                     data returned
-     */
-    public function patch($path, array $parameters = array(), $requestOptions = array())
-    {
-        return $this->getHttpClient()->patch($path, $parameters, $requestOptions);
+        return $this->prepare_request( $path, $parameters, $requestOptions, 'put' );
     }
 
     /**
@@ -152,30 +273,39 @@ class Client
      */
     public function delete($path, array $parameters = array(), $requestOptions = array())
     {
-        return $this->getHttpClient()->delete($path, $parameters, $requestOptions);
+        return $this->prepare_request( $path, $parameters, $requestOptions, 'delete' );
     }
 
+    
     /**
      * Get the http client.
      *
      * @return HttpClientInterface a request instance
      */
-    public function getHttpClient()
+    public function get_client()
     {
-        $this->httpClient->setHeaders($this->headers);
-
-        return $this->httpClient;
+        if ( is_array( $this->headers ) ){
+            foreach( $this->headers AS $option => $value ){
+                $this->client->set_header( $option, $value );
+            }
+        } else {
+            $this->client->set_header( $this->headers );
+        }
+        
+        return $this->client;
     }
+    
 
     /**
      * Inject another http client
      *
-     * @param HttpClientInterface $httpClient The httpClient instance
+     * @param GitHub\Client $client The client instance
      */
-    public function setHttpClient(HttpClientInterface $httpClient)
+    public function set_client( GitHub\Client $client)
     {
-        $this->httpClient = $httpClient;
+        $this->client = $client;
     }
+    
 
     /**
      * @param string $name
@@ -189,39 +319,42 @@ class Client
         if (!isset($this->apis[$name])) {
             switch ($name) {
                 case 'current_user':
-                    $api = new Api\CurrentUser($this);
+                    $api = new Api\Current_User( $this );
                     break;
 
                 case 'git_data':
-                    $api = new Api\GitData($this);
+                    $api = new Api\Git_Data( $this );
                     break;
 
                 case 'gists':
-                    $api = new Api\Gists($this);
+                    $api = new Api\Gists( $this );
                     break;
 
                 case 'issue':
-                    $api = new Api\Issue($this);
+                    $api = new Api\Issue( $this );
                     break;
 
                 case 'markdown':
-                    $api = new Api\Markdown($this);
+                    $api = new Api\Markdown( $this );
                     break;
 
                 case 'organization':
-                    $api = new Api\Organization($this);
+                    $api = new Api\Organization( $this );
                     break;
 
                 case 'pull_request':
-                    $api = new Api\PullRequest($this);
+                    $api = new Api\Pull_Request( $this );
                     break;
 
                 case 'repo':
-                    $api = new Api\Repo($this);
+                    $api = new Api\Repository( $this );
                     break;
 
                 case 'user':
-                    $api = new Api\User($this);
+                    echo 'API USER';
+                    
+                    
+                    $api = new Api\User( $this );
                     break;
 
                 default:
