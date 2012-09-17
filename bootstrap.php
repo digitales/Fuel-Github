@@ -20,6 +20,7 @@ Autoloader::add_classes(array(
     'Github\\Api\\Current_User\\Followers'      => __DIR__.'/classes/api/current_user/followers.php',
     'Github\\Api\\Current_User\\Watchers'       => __DIR__.'/classes/api/current_user/watchers.php',
     
+    'Github\\Api\\Event'                        => __DIR__.'/classes/api/event.php',
     
     'Github\\Api\\Git_Data'                     => __DIR__.'/classes/api/git_data.php',
     'Github\\Api\\Git_Data\\Blobs'              => __DIR__.'/classes/api/git_data/blobs.php',

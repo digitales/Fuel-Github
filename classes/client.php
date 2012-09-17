@@ -199,6 +199,8 @@ class Client
         
         $response  = Request::forge( $url, $options, $method )->execute()->response();
         
+        echo '$response<pre>'.print_r($response, 1).'</pre>';
+        
         if ( isset( $response->body ) ){
             return \Format::forge( $response->body, 'json' )->to_array();
         }else{
@@ -321,6 +323,10 @@ class Client
                 case 'current_user':
                     $api = new Api\Current_User( $this );
                     break;
+                
+                case 'event':
+                    $api = new Api\Event( $this );
+                    break;  
 
                 case 'git_data':
                     $api = new Api\Git_Data( $this );
