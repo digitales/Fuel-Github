@@ -339,7 +339,8 @@ class Client
                     break;
 
                 case 'organization':
-                    $api = new Api\Organization( $this );
+                case 'organisation':
+                    $api = new Api\Organisation( $this );
                     break;
 
                 case 'pull_request':
@@ -350,10 +351,7 @@ class Client
                     $api = new Api\Repository( $this );
                     break;
 
-                case 'user':
-                    echo 'API USER';
-                    
-                    
+                case 'user':                    
                     $api = new Api\User( $this );
                     break;
 
