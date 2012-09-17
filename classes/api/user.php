@@ -115,6 +115,33 @@ class User extends Abstract_Api
         
         return $this->get( $url );
     }
+    
+    
+    /**
+     * Get the oraganisations that the user is a member of
+     * @link http://developer.github.com/v3/otgs/
+     *
+     * @param null || string $username
+     * @return array list of the user repositories
+     */
+    public function organisations( $username = null )
+    {
+        $url = 'user/orgs';
+        
+        if ( $username ){
+            $url = 'users/' . urlencode( $username ) . '/orgs';
+        }
+        
+        return $this->get( $url );
+    }
+    
+    
+    /**
+     * Alternative organisation spelling
+     */
+    public function organizations( $username ){
+        return $this->organisations( $username );
+    }
 
     
     /**
