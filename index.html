@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Fuel-github by digitales</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Fuel-github</h1>
+        <p>Fuel GitHub API wrapper</p>
+
+        <p class="view"><a href="https://github.com/digitales/Fuel-Github">View the Project on GitHub <small>digitales/Fuel-Github</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/digitales/Fuel-Github/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/digitales/Fuel-Github/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/digitales/Fuel-Github">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Fuel-Github</h1>
+
+<p>Fuel GitHub API wrapper influenced by <a href="http://travis-ci.org/KnpLabs/php-github-api">http://travis-ci.org/KnpLabs/php-github-api</a> </p>
+
+<p>A simple Object Oriented wrapper for GitHub API, written with PHP5.</p>
+
+<p>Uses <a href="http://developer.github.com/v3/">GitHub API v3</a>. The object API is very similar to the RESTful API.</p>
+
+<h2>Basic usage</h2>
+
+<p>Firstly add the Github package to your FuelPHP app and then autoload it in your app config </p>
+
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+
+<span class="nv">$client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Github\Client</span><span class="p">();</span>
+<span class="nv">$user_details</span> <span class="o">=</span> <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">api</span><span class="p">(</span><span class="s1">'user'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">show</span><span class="p">(</span><span class="s1">'digitales'</span><span class="p">);</span>
+</pre></div>
+
+<p>From <code>$client</code> object, you can call the different API calls.</p>
+
+<p>More documentation to follow, but please take a browse through the code and the <a href="http://developer.github.com/v3/">GitHub API v3</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/digitales">digitales</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-34880992-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
