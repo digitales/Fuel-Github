@@ -94,7 +94,52 @@ class User extends Abstract_Api
      */
     public function watched( $username = null )
     {
-        return $this->get('users/' . urlencode( $username ) . '/watched');
+        $url = 'user/watched';
+        
+        if ( $username ){
+            $url = 'users/' . urlencode( $username ) . '/watched';
+        }
+        
+        
+        return $this->get( $url, array( 'per_page' => 100 ) );
+    }
+    
+    
+    /**
+     * Request the repository that a specific user is watching (or the authenticated user)
+     * @link http://developer.github.com/v3/repos/watching/
+     *
+     * @param  null || string  $username
+     * @return array list of subscriptions
+     */
+    public function subscriptions( $username = null )
+    {
+        $url = '/user/subscriptions';
+        
+        if ( $username ){
+            $url = '/users/' . urlencode( $username ) . '/subscriptions';
+        }
+        
+        return $this->get( $url );
+    }
+    
+    
+    /**
+     * Request the repository that a specific user (or the authenticated user) has starred 
+     * @link http://developer.github.com/v3/repos/starring/#list-repositories-being-starred
+     *
+     * @param  null || string  $username
+     * @return array list of subscriptions
+     */
+    public function starred( $username = null )
+    {
+        $url = 'user/starred';
+        
+        if ( $username ){
+            $url = 'users/' . urlencode( $username ) . '/starred';
+        }
+        
+        return $this->get( $url );
     }
 
     

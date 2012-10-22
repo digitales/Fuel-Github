@@ -199,7 +199,7 @@ class Client
         
         $response  = Request::forge( $url, $options, $method )->execute()->response();
         
-        echo '$response<pre>'.print_r($response, 1).'</pre>';
+        //echo '$response<pre>'.print_r($response, 1).'</pre>';
         
         if ( isset( $response->body ) ){
             return \Format::forge( $response->body, 'json' )->to_array();
