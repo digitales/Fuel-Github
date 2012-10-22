@@ -20,7 +20,7 @@ use Github\Api\Repository\Labels;
  * @link   http://developer.github.com/v3/repos/
  * @author Ross Tweedie <ross.tweedie at gmail dot com>
  */
-class Repository extends AbstractApi
+class Repository extends Abstract_Api
 {
     /**
      * Search repositories by keyword:
