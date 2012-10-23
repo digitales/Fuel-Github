@@ -204,7 +204,7 @@ class Client
         $options = $this->options;
         $options['params']  = array_merge( $this->params, $parameters );
 
-        if ( $requestOptions['include_headers'] ){
+        if ( isset( $requestOptions['include_headers'] ) ){
             $options['options'][CURLOPT_HEADER] = true;
             unset( $requestOptions['include_headers'] );
         }
