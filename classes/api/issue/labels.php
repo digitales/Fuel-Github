@@ -12,9 +12,9 @@ use Github\Exception\InvalidArgumentException;
  */
 class Labels extends Abstract_Api
 {
-    public function all($username, $repository, $issue)
+    public function all($username, $repository, $issue, $page = 1)
     {
-        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/issues/'.urlencode($issue).'/labels');
+        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/issues/'.urlencode($issue).'/labels', array( 'page' => $page ), array( 'include_headers' => true ) );
     }
 
     public function add($username, $repository, $issue, $labels)

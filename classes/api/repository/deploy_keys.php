@@ -12,9 +12,10 @@ use Github\Exception\MissingArgumentException;
  */
 class Deploy_Keys extends Abstract_Api
 {
-    public function all($username, $repository)
+    public function all($username, $repository, $params = array() )
     {
-        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/keys');
+        // The all method supports pagination, so let's also retrieve the response headers
+        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/keys', $params, array( 'include_headers' => true ) );
     }
 
     public function show($username, $repository, $id)

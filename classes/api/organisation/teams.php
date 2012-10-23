@@ -12,9 +12,9 @@ use Github\Exception\MissingArgumentException;
  */
 class Teams extends Abstract_Api
 {
-    public function all($organisation)
+    public function all($organisation, $params = array() )
     {
-        return $this->get('orgs/'.urlencode($organisation).'/teams');
+        return $this->get('orgs/'.urlencode($organisation).'/teams', $params, array( 'include_headers' => true ));
     }
 
     public function show($organisation, $team)

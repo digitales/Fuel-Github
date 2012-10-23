@@ -20,9 +20,7 @@ class Followers extends Abstract_Api
      */
     public function all($page = 1)
     {
-        return $this->get('user/following', array(
-            'page' => $page
-        ));
+        return $this->get('user/following', array( 'page' => $page ), array( 'include_headers' => true ));
     }
 
     /**

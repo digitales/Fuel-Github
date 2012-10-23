@@ -16,7 +16,7 @@ class Comments extends Abstract_Api
     {
         return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/issues/'.urlencode($issue).'/comments', array(
             'page' => $page
-        ));
+        ), array( 'include_headers' => true ) );
     }
 
     public function show($username, $repository, $comment)

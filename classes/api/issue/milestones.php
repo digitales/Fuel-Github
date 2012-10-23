@@ -24,7 +24,7 @@ class Milestones extends Abstract_Api
             $params['direction'] = 'desc';
         }
 
-        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/milestones', array_merge(array('page' => 1, 'state' => 'open', 'sort' => 'due_date', 'direction' => 'desc'), $params));
+        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/milestones', array_merge(array('page' => 1, 'state' => 'open', 'sort' => 'due_date', 'direction' => 'desc'), $params), array( 'include_headers' => true ) );
     }
 
     public function show($username, $repository, $id)

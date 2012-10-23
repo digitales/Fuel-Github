@@ -12,13 +12,15 @@ use Github\Exception\MissingArgumentException;
  */
 class Comments extends Abstract_Api
 {
-    public function all($username, $repository, $sha = null)
+    public function all($username, $repository, $sha = null, $params = array() )
     {
+        // The all method supports pagination, so let's also retrieve the response headers
+
         if (null === $sha) {
-            return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/comments');
+            return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/comments', $params, array( 'include_headers' => true ));
         }
 
-        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/commits/'.urlencode($sha).'/comments');
+        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/commits/'.urlencode($sha).'/comments', array(), array( 'include_headers' => true ) );
     }
 
     public function show($username, $repository, $comment)

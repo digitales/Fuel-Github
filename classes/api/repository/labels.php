@@ -12,9 +12,10 @@ use Github\Exception\MissingArgumentException;
  */
 class Labels extends Abstract_Api
 {
-    public function all($username, $repository)
+    public function all($username, $repository, $params = array() )
     {
-        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/labels');
+        // The all method supports pagination, so let's also retrieve the response headers
+        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/labels', $params, array( 'include_headers' => true ) );
     }
 
     public function show($username, $repository, $label)

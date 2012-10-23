@@ -11,9 +11,10 @@ use Github\Api\Abstract_Api;
  */
 class Commits extends Abstract_Api
 {
-    public function all($username, $repository, array $params)
+    public function all($username, $repository, array $params = array() )
     {
-        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/commits', $params);
+        // The all method supports pagination, so let's also retrieve the response headers
+        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/commits', $params, array( 'include_headers' => true ) );
     }
 
     public function compare($username, $repository, $base, $head)

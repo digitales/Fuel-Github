@@ -11,13 +11,13 @@ use Github\Api\Abstract_Api;
  */
 class Members extends Abstract_Api
 {
-    public function all($organisation, $type = null)
+    public function all($organisation, $type = null, $params = array() )
     {
         if (null === $type) {
             return $this->get('orgs/'.urlencode($organisation).'/members');
         }
 
-        return $this->get('orgs/'.urlencode($organisation).'/public_members');
+        return $this->get('orgs/'.urlencode($organisation).'/public_members', $params, array( 'include_headers' => true ));
     }
 
     public function show($organisation, $username)

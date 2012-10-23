@@ -16,7 +16,7 @@ class Events extends Abstract_Api
         if (null !== $issue) {
             return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/issues/'.urlencode($issue).'/events', array(
                 'page' => $page
-            ));
+            ), array( 'include_headers' => true ) );
         }
 
         return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/issues/events', array(

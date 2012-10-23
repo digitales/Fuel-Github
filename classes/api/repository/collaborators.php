@@ -11,9 +11,10 @@ use Github\Api\Abstract_Api;
  */
 class Collaborators extends Abstract_Api
 {
-    public function all($username, $repository)
+    public function all($username, $repository, $params = null )
     {
-        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/collaborators');
+        // The all method supports pagination, so let's also retrieve the response headers
+        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/collaborators', $params, array( 'include_headers' => true ) );
     }
 
     public function check($username, $repository, $collaborator)

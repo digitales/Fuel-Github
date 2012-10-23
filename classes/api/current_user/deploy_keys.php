@@ -16,11 +16,14 @@ class Deploy_Keys extends Abstract_Api
      * List deploy keys for the authenticated user
      * @link http://developer.github.com/v3/repos/keys/
      *
+     * @param array $params
+     *
      * @return array
      */
-    public function all()
+    public function all( $params = array() )
     {
-        return $this->get('user/keys');
+        // This method supports pagination, so let's return the headers for their links.
+        return $this->get('user/keys', $params, array( 'include_headers' => true ));
     }
 
     /**

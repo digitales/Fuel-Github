@@ -51,14 +51,14 @@ class Current_User extends Abstract_Api
 
     public function issues(array $params = array())
     {
-        return $this->get('issues', array_merge(array('page' => 1), $params));
+        // The all method supports pagination, so let's also retrieve the response headers
+        return $this->get('issues', array_merge(array('page' => 1), $params), array( 'include_headers' => true ) );
     }
 
     public function followers($page = 1)
     {
-        return $this->get('user/followers', array(
-            'page' => $page
-        ));
+        // The all method supports pagination, so let's also retrieve the response headers
+        return $this->get('user/followers', array( 'page' => $page ), array( 'include_headers' => true ) );
     }
 
     /**
@@ -71,8 +71,6 @@ class Current_User extends Abstract_Api
 
     public function watched($page = 1)
     {
-        return $this->get('user/watched', array(
-            'page' => $page
-        ));
+        return $this->get('user/watched', array( 'page' => $page ), array( 'include_headers' => true ) );
     }
 }

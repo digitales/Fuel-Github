@@ -17,12 +17,13 @@ class Downloads extends Abstract_Api
      *
      * @param  string  $username         the user who owns the repo
      * @param  string  $repository       the name of the repo
-     *
+     * @param  array   $params          the params to pass through, for example the page number
      * @return array
      */
-    public function all($username, $repository)
+    public function all($username, $repository, $params = array() )
     {
-        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/downloads');
+        // The all method supports pagination, so let's also retrieve the response headers
+        return $this->get('repos/'.urlencode($username).'/'.urlencode($repository).'/downloads', $params, array( 'include_headers' => true ) );
     }
 
     /**

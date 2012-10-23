@@ -20,9 +20,7 @@ class Watchers extends Abstract_Api
      */
     public function all($page = 1)
     {
-        return $this->get('user/watched', array(
-            'page' => $page
-        ));
+        return $this->get('user/watched', array( 'page' => $page ), array( 'include_headers' => true ));
     }
 
     /**
