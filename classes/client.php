@@ -13,7 +13,7 @@ use Fuel\Core\Request_Curl;
  * Simple FuelPHP Github client
  *
  * @author Ross Tweedie <r.tweedie@gmail.com>
- * 
+ *
  * Website: http://github.com/digitales/Fuel-Github
  */
 class Client
@@ -35,15 +35,15 @@ class Client
      * with username and token via HTTP Authentication.
      */
     const AUTH_HTTP_TOKEN = 'http_token';
-    
-    
+
+
     protected static $_user, $_api_token, $_url, $_driver;
     protected static $_consumer_key, $_consumer_secret, $_callback;
     protected static $_redirect_url, $_api_url;
-    
+
     protected $options, $params;
 
-    
+
     /**
      * The httpClient instance used to communicate with GitHub
      *
@@ -66,6 +66,13 @@ class Client
     private $headers = array();
 
     /**
+     * HTTP status code
+     *
+     * @var string
+     */
+    private $status_code = null;
+
+    /**
      * Instantiate a new GitHub client
      *
      * @param HttpClientInterface $httpClient custom http client
@@ -76,7 +83,7 @@ class Client
             $this->setup();
         }
     }
-    
+
     /**
      * Set up the client with the config settings
      *
@@ -93,14 +100,14 @@ class Client
         static::$_callback          = $config[ $config['active'] ]['callback'];
         static::$_redirect_url      = $config[ $config['active'] ]['redirect_url'];
         static::$_api_url           = $config[ $config['active'] ]['api_url'];
-        
+
         // We need to use the CURL driver for this to work.
         $this->set_option( 'driver', 'curl' );
-        
+
         return $this;
     }
-    
-    
+
+
     /**
 	 * Sets options on the driver
 	 *
@@ -117,7 +124,7 @@ class Client
 		return $this;
 	}
 
-	
+
     /**
 	 * Sets a single option/value
 	 *
@@ -129,8 +136,8 @@ class Client
 	{
 		return $this->set_options(array($option => $value));
 	}
-    
-    
+
+
     /**
 	 * Sets params for the driver
 	 *
@@ -147,7 +154,7 @@ class Client
 		return $this;
 	}
 
-    
+
 	/**
 	 * Sets a single param/value
 	 *
@@ -159,7 +166,7 @@ class Client
 	{
 		return $this->set_params(array($option => $value));
 	}
-    
+
 
     /**
      * Authenticate a user for all next requests
@@ -173,13 +180,13 @@ class Client
     {
         if ($method === self::AUTH_HTTP_PASSWORD) {
             $this->set_option('login', $login)->set_option('password', $secret);
-        } else {    
+        } else {
             $this->set_param('access_token', $secret);
         }
         return $this;
     }
-    
-    
+
+
     /**
      * Prepare the request to be performed
      * Ex: $api->get('repos/show/my-username/my-repo')
@@ -193,21 +200,32 @@ class Client
     protected function prepare_request( $path, array $parameters = array(), $requestOptions = array(), $method = 'get' )
     {
         $url = self::$_url.'/'.$path;
-        
+
         $options = $this->options;
-        $options['params']  = array_merge( $this->params, $parameters );   
-        
+        $options['params']  = array_merge( $this->params, $parameters );
+
+        if ( $requestOptions['include_headers'] ){
+            $options['options'][CURLOPT_HEADER] = true;
+            unset( $requestOptions['include_headers'] );
+        }
+
         $response  = Request::forge( $url, $options, $method )->execute()->response();
-        
-        //echo '$response<pre>'.print_r($response, 1).'</pre>';
-        
+
+        if ( isset( $response->headers ) ){
+            $this->set_headers( $response->headers );
+        }
+
+        if ( isset( $response->status ) ){
+            $this->status_code = (int) $response->status;
+        }
+
         if ( isset( $response->body ) ){
             return \Format::forge( $response->body, 'json' )->to_array();
         }else{
             return false;
         }
     }
-    
+
 
     /**
      * Call any path, GET method
@@ -236,8 +254,8 @@ class Client
     {
         return $this->prepare_request( $path, $parameters, $requestOptions, 'post' );
     }
-    
-    
+
+
     /**
      * Call any path, PATCH method
      * Ex: $api->patc('repos/show/my-username', array('email' => 'my-new-email@provider.org'))
@@ -251,7 +269,7 @@ class Client
     {
         return $this->prepare_request( $path, $parameters, $requestOptions, 'post' );
     }
-    
+
 
     /**
      * Call any path, PUT method
@@ -278,7 +296,7 @@ class Client
         return $this->prepare_request( $path, $parameters, $requestOptions, 'delete' );
     }
 
-    
+
     /**
      * Get the http client.
      *
@@ -293,10 +311,10 @@ class Client
         } else {
             $this->client->set_header( $this->headers );
         }
-        
+
         return $this->client;
     }
-    
+
 
     /**
      * Inject another http client
@@ -307,7 +325,7 @@ class Client
     {
         $this->client = $client;
     }
-    
+
 
     /**
      * @param string $name
@@ -323,10 +341,10 @@ class Client
                 case 'current_user':
                     $api = new Api\Current_User( $this );
                     break;
-                
+
                 case 'event':
                     $api = new Api\Event( $this );
-                    break;  
+                    break;
 
                 case 'git_data':
                     $api = new Api\Git_Data( $this );
@@ -357,7 +375,7 @@ class Client
                     $api = new Api\Repository( $this );
                     break;
 
-                case 'user':                    
+                case 'user':
                     $api = new Api\User( $this );
                     break;
 
@@ -382,7 +400,7 @@ class Client
     /**
      * Clears used headers
      */
-    public function clearHeaders()
+    public function clear_headers()
     {
         $this->setHeaders(array());
     }
@@ -390,8 +408,32 @@ class Client
     /**
      * @param array $headers
      */
-    public function setHeaders($headers)
+    public function set_headers($headers)
     {
         $this->headers = $headers;
     }
+
+
+    /**
+     * Get the headers
+     *
+     * @param void
+     * @return array
+     */
+    public function get_headers()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Get the status code
+     *
+     * @param void
+     * @return integer || null
+     */
+    public function get_status_code()
+    {
+        return $this->status_code;
+    }
+
 }
