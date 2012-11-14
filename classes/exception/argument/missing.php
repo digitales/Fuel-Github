@@ -1,9 +1,9 @@
 <?php
 
-namespace Github;
+namespace Github\Exception;
 
 /**
- * MissingArgumentException
+ * Exception_Argument_Missing
  *
  * @author Joseph Bielawski <stloyd@gmail.com>
  */

@@ -3,7 +3,7 @@
 namespace Github\Api\Git_Data;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * @link   http://developer.github.com/v3/git/references/
@@ -34,7 +34,7 @@ class References extends Abstract_Api
     public function create($username, $repository, array $params)
     {
         if (!isset($params['ref'], $params['sha'])) {
-            throw new MissingArgumentException(array('ref', 'sha'));
+            throw new Exception_Argument_Missing(array('ref', 'sha'));
         }
 
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/git/refs', $params);
@@ -43,7 +43,7 @@ class References extends Abstract_Api
     public function update($username, $repository, $reference, array $params)
     {
         if (!isset($params['sha'])) {
-            throw new MissingArgumentException('sha');
+            throw new Exception_Argument_Missing('sha');
         }
 
         return $this->patch('repos/'.urlencode($username).'/'.urlencode($repository).'/git/refs/'.urlencode($reference), $params);

@@ -3,7 +3,7 @@
 namespace Github\Api\Git_Data;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * @link   http://developer.github.com/v3/git/commits/
@@ -19,7 +19,7 @@ class Commits extends Abstract_Api
     public function create($username, $repository, array $params)
     {
         if (!isset($params['message'], $params['tree'], $params['parents'])) {
-            throw new MissingArgumentException(array('message', 'tree', 'parents'));
+            throw new Exception_Argument_Missing(array('message', 'tree', 'parents'));
         }
 
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/git/commits', $params);

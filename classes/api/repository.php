@@ -6,9 +6,7 @@ use Github\Api\Abstract_Api;
 use Github\Api\Repository\Collaborators;
 use Github\Api\Repository\Comments;
 use Github\Api\Repository\Commits;
-use Github\Api\Repository\Contents;
 use Github\Api\Repository\Deploy_Keys;
-use Github\Api\Repository\Downloads;
 use Github\Api\Repository\Forks;
 use Github\Api\Repository\Hooks;
 use Github\Api\Repository\Labels;
@@ -124,11 +122,11 @@ class Repository extends Abstract_Api
      * Manage the deploy keys of a repository
      * @link http://developer.github.com/v3/repos/keys/
      *
-     * @return DeployKeys
+     * @return Deploy_Keys
      */
     public function keys()
     {
-        return new DeployKeys($this->client);
+        return new Deploy_Keys($this->client);
     }
 
     /**

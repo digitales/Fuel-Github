@@ -3,7 +3,7 @@
 namespace Github\Api;
 
 use Github\Api\Pull_Request\Comments;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * API for accessing Pull Requests from your Git/Github repositories.
@@ -74,22 +74,22 @@ class Pull_Request extends Abstract_Api
      *
      * @return array
      *
-     * @throws MissingArgumentException
+     * @throws Exception_Argument_Missing
      */
     public function create($username, $repository, array $params)
     {
         // Two ways to create PR, using issue or title
         if (!isset($params['issue']) && !isset($params['title'])) {
-            throw new MissingArgumentException(array('issue', 'title'));
+            throw new Exception_Argument_Missing(array('issue', 'title'));
         }
 
         if (!isset($params['base'], $params['head'])) {
-            throw new MissingArgumentException(array('base', 'head'));
+            throw new Exception_Argument_Missing(array('base', 'head'));
         }
 
         // If `issue` is not sent, then `body` must be sent
         if (!isset($params['issue']) && !isset($params['body'])) {
-            throw new MissingArgumentException(array('issue', 'body'));
+            throw new Exception_Argument_Missing(array('issue', 'body'));
         }
 
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/pulls', $params);

@@ -3,7 +3,7 @@
 namespace Github\Api\Issue;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * @link   http://developer.github.com/v3/issues/milestones/
@@ -35,7 +35,7 @@ class Milestones extends Abstract_Api
     public function create($username, $repository, array $params)
     {
         if (!isset($params['title'])) {
-            throw new MissingArgumentException('title');
+            throw new Exception_Argument_Missing('title');
         }
         if (isset($params['state']) && !in_array($params['state'], array('open', 'closed'))) {
             $params['state'] = 'open';

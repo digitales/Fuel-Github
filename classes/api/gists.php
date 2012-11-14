@@ -4,7 +4,7 @@ namespace Github\Api;
 
 use Github\Api\Abstract_Api;
 
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * Creating, editing, deleting and listing gists
@@ -33,7 +33,7 @@ class Gists extends Abstract_Api
     public function create(array $params)
     {
         if (!isset($params['files']) || (!is_array($params['files']) || 0 === count($params['files']))) {
-            throw new MissingArgumentException('files');
+            throw new Exception_Argument_Missing('files');
         }
 
         $params['public'] = (boolean) $params['public'];

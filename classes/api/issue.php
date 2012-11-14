@@ -7,7 +7,7 @@ use Github\Api\Issue\Comments;
 use Github\Api\Issue\Events;
 use Github\Api\Issue\Labels;
 use Github\Api\Issue\Milestones;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * Listing issues, searching, editing and closing your projects issues.
@@ -77,12 +77,12 @@ class Issue extends Abstract_Api
      * @param  array   $params           the new issue data
      * @return array                     information about the issue
      *
-     * @throws MissingArgumentException
+     * @throws Exception_Argument_Missing
      */
     public function create($username, $repository, array $params)
     {
         if (!isset($params['title'], $params['body'])) {
-            throw new MissingArgumentException(array('title', 'body'));
+            throw new Exception_Argument_Missing(array('title', 'body'));
         }
 
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/issues', $params);

@@ -3,7 +3,7 @@
 namespace Github\Api\Organisation;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * @link   http://developer.github.com/v3/orgs/teams/
@@ -25,7 +25,7 @@ class Teams extends Abstract_Api
     public function create($organisation, array $params)
     {
         if (!isset($params['name'])) {
-            throw new MissingArgumentException('name');
+            throw new Exception_Argument_Missing('name');
         }
         if (isset($params['repo_names']) && !is_array($params['repo_names'])) {
             $params['repo_names'] = array($params['repo_names']);
@@ -40,7 +40,7 @@ class Teams extends Abstract_Api
     public function update($team, array $params)
     {
         if (!isset($params['name'])) {
-            throw new MissingArgumentException('name');
+            throw new Exception_Argument_Missing('name');
         }
         if (isset($params['permission']) && !in_array($params['permission'], array('pull', 'push', 'admin'))) {
             $params['permission'] = 'pull';

@@ -3,7 +3,7 @@
 namespace Github\Api\Current_User;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\Exception_Argument_Invalid;
+use Github\Exception_Argument_Invalid;
 
 /**
  * @link   http://developer.github.com/v3/users/emails/
@@ -30,14 +30,14 @@ class Emails extends Abstract_Api
      * @param  string|array $emails
      * @return array
      *
-     * @throws InvalidArgumentException
+     * @throws Exception_Argument_Invalid
      */
     public function add($emails)
     {
         if (is_string($emails)) {
             $emails = array($emails);
         } elseif (0 === count($emails)) {
-            throw new InvalidArgumentException();
+            throw new Exception_Argument_Invalid();
         }
 
         return $this->post('user/emails', $emails);
@@ -50,14 +50,14 @@ class Emails extends Abstract_Api
      * @param  string|array $emails
      * @return array
      *
-     * @throws InvalidArgumentException
+     * @throws Exception_Argument_Invalid
      */
     public function remove($emails)
     {
         if (is_string($emails)) {
             $emails = array($emails);
         } elseif (0 === count($emails)) {
-            throw new InvalidArgumentException();
+            throw new Exception_Argument_Invalid();
         }
 
         return $this->delete('user/emails', $emails);

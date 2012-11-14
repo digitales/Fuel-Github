@@ -3,7 +3,7 @@
 namespace Github\Api\Current_User;
 
 use Github\Api\Abstract_Api;
-use Github\Exception_Argument_Missing;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * @link   http://developer.github.com/v3/users/keys/
@@ -45,12 +45,12 @@ class Deploy_Keys extends Abstract_Api
      * @param  array $params
      * @return array
      *
-     * @throws MissingArgumentException
+     * @throws Exception_Argument_Missing
      */
     public function create(array $params)
     {
         if (!isset($params['title'], $params['key'])) {
-            throw new MissingArgumentException(array('title', 'key'));
+            throw new Exception_Argument_Missing(array('title', 'key'));
         }
 
         return $this->post('user/keys', $params);
@@ -64,12 +64,12 @@ class Deploy_Keys extends Abstract_Api
      * @param  array  $params
      * @return array
      *
-     * @throws MissingArgumentException
+     * @throws Exception_Argument_Missing
      */
     public function update($id, array $params)
     {
         if (!isset($params['title'], $params['key'])) {
-            throw new MissingArgumentException(array('title', 'key'));
+            throw new Exception_Argument_Missing(array('title', 'key'));
         }
 
         return $this->patch('user/keys/'.urlencode($id), $params);
