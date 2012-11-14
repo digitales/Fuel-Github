@@ -3,7 +3,7 @@
 namespace Github\Api\Issue;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\InvalidArgumentException;
+use Github\Exception_Argument_Invalid;
 
 /**
  * @link   http://developer.github.com/v3/issues/labels/
@@ -22,7 +22,7 @@ class Labels extends Abstract_Api
         if (is_string($labels)) {
             $labels = array($labels);
         } elseif (0 === count($labels)) {
-            throw new InvalidArgumentException();
+            throw new Exception_Argument_Invalid();
         }
 
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/issues/'.urlencode($issue).'/labels', $labels);

@@ -3,7 +3,7 @@
 namespace Github\Api\Repository;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * @link   http://developer.github.com/v3/issues/labels/
@@ -26,7 +26,7 @@ class Labels extends Abstract_Api
     public function create($username, $repository, array $params)
     {
         if (!isset($params['name'], $params['color'])) {
-            throw new MissingArgumentException(array('name', 'color'));
+            throw new Exception_Argument_Missing(array('name', 'color'));
         }
 
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/labels', $params);
@@ -35,7 +35,7 @@ class Labels extends Abstract_Api
     public function update($username, $repository, $label, array $params)
     {
         if (!isset($params['name'], $params['color'])) {
-            throw new MissingArgumentException(array('name', 'color'));
+            throw new Exception_Argument_Missing(array('name', 'color'));
         }
 
         return $this->patch('repos/'.urlencode($username).'/'.urlencode($repository).'/labels/'.urlencode($label), $params);

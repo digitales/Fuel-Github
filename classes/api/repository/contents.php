@@ -3,7 +3,6 @@
 namespace Github\Api\Repository;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\MissingArgumentException;
 
 /**
  * @link   http://developer.github.com/v3/repos/contents/

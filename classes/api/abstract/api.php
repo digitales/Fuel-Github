@@ -4,9 +4,6 @@ namespace Github\Api;
 
 use Github\Client;
 
-use Fuel\Core\Request;
-use Fuel\Core\Request_Curl;
-
 /**
  * Abstract class for Api classes
  *
