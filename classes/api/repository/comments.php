@@ -3,7 +3,7 @@
 namespace Github\Api\Repository;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * @link   http://developer.github.com/v3/repos/comments/
@@ -31,7 +31,7 @@ class Comments extends Abstract_Api
     public function create($username, $repository, $sha, array $params)
     {
         if (!isset($params['body'], $params['commit_id'], $params['line'], $params['path'], $params['position'])) {
-            throw new MissingArgumentException(array('body', 'commit_id', 'line', 'path', 'position'));
+            throw new Exception_Argument_Missing(array('body', 'commit_id', 'line', 'path', 'position'));
         }
 
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/commits/'.urlencode($sha).'/comments', $params);
@@ -40,7 +40,7 @@ class Comments extends Abstract_Api
     public function update($username, $repository, $comment, array $params)
     {
         if (!isset($params['body'])) {
-            throw new MissingArgumentException('body');
+            throw new Exception_Argument_Missing('body');
         }
 
         return $this->patch('repos/'.urlencode($username).'/'.urlencode($repository).'/comments/'.urlencode($comment), $params);

@@ -3,10 +3,10 @@
 namespace Github\Api;
 
 use Github\Api\Abstract_Api;
-use Github\Api\Current_User\Deploy_Keys;
 use Github\Api\Current_User\Emails;
 use Github\Api\Current_User\Followers;
 use Github\Api\Current_User\Watchers;
+use Github\Api\Current_User\Deploy_Keys;
 
 /**
  * @link   http://developer.github.com/v3/users/
@@ -26,11 +26,11 @@ class Current_User extends Abstract_Api
     }
 
     /**
-     * @return DeployKeys
+     * @return Deploy_Keys
      */
     public function keys()
     {
-        return new DeployKeys($this->client);
+        return new Deploy_Keys($this->client);
     }
 
     /**

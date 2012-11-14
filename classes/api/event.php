@@ -72,7 +72,7 @@ class Event extends Abstract_Api
     *
     * @return array                  the events
     */
-    public function network( $user, $repository )
+    public function network( $user, $repository, $page = 1 )
     {
         return $this->get( 'networks/' . urlencode( $user ) . '/' . urlencode( $repository ) .'/events', array( 'page' => $page ), array( 'include_headers' => true ) );
     }
@@ -118,7 +118,7 @@ class Event extends Abstract_Api
 
     /**
      * List events for an oganisation
-     * This is the userÕs organization dashboard. You must be authenticated as the user to view this.
+     * This is the userï¿½s organization dashboard. You must be authenticated as the user to view this.
      *
      * @param string $user
      * @param string $organisation
@@ -126,7 +126,7 @@ class Event extends Abstract_Api
      *
      * @return array
      */
-    public function userOrganisation( $user, $organisation )
+    public function userOrganisation( $user, $organisation, $page = 1 )
     {
         return $this->get( 'users/' . urlencode( $user ) . '/events/orgs/' . urlencode( $organisation ), array( 'page' => $page ), array( 'include_headers' => true ) );
     }

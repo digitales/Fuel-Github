@@ -3,7 +3,7 @@
 namespace Github\Api\Repository;
 
 use Github\Api\Abstract_Api;
-use Github\Exception\MissingArgumentException;
+use Github\Exception\Exception_Argument_Missing;
 
 /**
  * @link   http://developer.github.com/v3/repos/keys/
@@ -26,7 +26,7 @@ class Deploy_Keys extends Abstract_Api
     public function create($username, $repository, array $params)
     {
         if (!isset($params['title'], $params['key'])) {
-            throw new MissingArgumentException(array('title', 'key'));
+            throw new Exception_Argument_Missing(array('title', 'key'));
         }
 
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/keys', $params);
@@ -35,7 +35,7 @@ class Deploy_Keys extends Abstract_Api
     public function update($username, $repository, $id, array $params)
     {
         if (!isset($params['title'], $params['key'])) {
-            throw new MissingArgumentException(array('title', 'key'));
+            throw new Exception_Argument_Missing(array('title', 'key'));
         }
 
         return $this->patch('repos/'.urlencode($username).'/'.urlencode($repository).'/keys/'.urlencode($id), $params);

@@ -2,12 +2,12 @@
 
 namespace Github;
 
-use Github\Api;
-use Github\Api\Api_Interface;
+use \Github\Api;
+use \Github\Api\Api_Interface;
 
-use Fuel\Core\Request;
-use Fuel\Core\Request_Curl;
-
+use \Fuel\Core\Request;
+use \Fuel\Core\Format;
+use \Fuel\Core\Config;
 
 /**
  * Simple FuelPHP Github client
@@ -89,11 +89,11 @@ class Client
      * Set up the client with the config settings
      *
      * @param null
-     * @return Github\Client fluent interface
+     * @return \Github\Client fluent interface
      */
     public function setup()
     {
-        $config = \Config::load('github', true);
+        $config = Config::load('github', true);
 
         static::$_url               = $config[ $config['active'] ]['api_url'];
         static::$_consumer_key      = $config[ $config['active'] ]['consumer_key'];
@@ -109,11 +109,11 @@ class Client
     }
 
 
-    /**
+  /**
 	 * Sets options on the driver
 	 *
 	 * @param   array  $options
-	 * @return  Github\Client fluent interface
+	 * @return  Client fluent interface
 	 */
 	public function set_options(array $options)
 	{
@@ -126,12 +126,12 @@ class Client
 	}
 
 
-    /**
+  /**
 	 * Sets a single option/value
 	 *
 	 * @param   int|string $option
 	 * @param   mixed $value
-	 * @return  Github\Client fluent interface
+	 * @return  Client fluent interface
 	 */
 	public function set_option($option, $value)
 	{
@@ -143,7 +143,7 @@ class Client
 	 * Sets params for the driver
 	 *
 	 * @param   array  $options
-	 * @return  Github\Client fluent interface
+	 * @return  Client fluent interface
 	 */
 	public function set_params(array $options)
 	{
@@ -161,7 +161,7 @@ class Client
 	 *
 	 * @param   int|string  $option
 	 * @param   mixed       $value
-	 * @return  Github\Client fluent interface
+	 * @return  Client fluent interface
 	 */
 	public function set_param($option, $value)
 	{
@@ -175,7 +175,7 @@ class Client
      * @param string      $login  GitHub username
      * @param string      $secret GitHub private token or Github password if $method == AUTH_HTTP_PASSWORD
      * @param null|string $method One of the AUTH_* class constants
-     * @return Github\Client fluent interface
+     * @return Client fluent interface
      */
     public function authenticate($login, $secret = null, $method = null)
     {
@@ -221,8 +221,8 @@ class Client
         }
 
         if ( isset( $response->body ) ){
-            return \Format::forge( $response->body, 'json' )->to_array();
-        }else{
+            return Format::forge( $response->body, 'json' )->to_array();
+        } else{
             return false;
         }
     }
@@ -281,7 +281,7 @@ class Client
      */
     public function put($path, $requestOptions = array())
     {
-        return $this->prepare_request( $path, $parameters, $requestOptions, 'put' );
+        return $this->prepare_request( $path, array(), $requestOptions, 'put' );
     }
 
     /**
@@ -320,9 +320,9 @@ class Client
     /**
      * Inject another http client
      *
-     * @param GitHub\Client $client The client instance
+     * @param Client $client The client instance
      */
-    public function set_client( GitHub\Client $client)
+    public function set_client( Client $client)
     {
         $this->client = $client;
     }
@@ -331,9 +331,9 @@ class Client
     /**
      * @param string $name
      *
-     * @return ApiInterface
+     * @return Api\Api_Interface
      *
-     * @throws \InvalidArgumentException
+     * @throws Exception_Argument_Invalid
      */
     public function api($name)
     {
@@ -381,7 +381,7 @@ class Client
                     break;
 
                 default:
-                    throw new \Exception_Argument_Invalid();
+                    throw new Exception_Argument_Invalid();
             }
 
             $this->apis[$name] = $api;
@@ -403,7 +403,7 @@ class Client
      */
     public function clear_headers()
     {
-        $this->setHeaders(array());
+        $this->set_headers(array());
     }
 
     /**
