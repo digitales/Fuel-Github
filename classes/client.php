@@ -41,7 +41,8 @@ class Client
     protected static $_consumer_key, $_consumer_secret, $_callback;
     protected static $_redirect_url, $_api_url;
 
-    protected $options, $params;
+    protected $options;
+    protected $params = array();
 
 
     /**
